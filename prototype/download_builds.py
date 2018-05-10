@@ -29,6 +29,7 @@ class DownloadSource(object):
     @classmethod
     def downloadURL(cls, url, destination_path):
         opened_url = urllib2.urlopen(url)
+
         print "Downloading to {0}".format(destination_path)
 
         with open(str(destination_path), 'wb') as output:
@@ -37,24 +38,42 @@ class DownloadSource(object):
 
 class DownloadDestination(object):
     def __init__(self, download_path):
-        self.download_path = pathlib2.Path(download_path).expanduser()
+        self.path = pathlib2.Path(download_path).expanduser()
 
     def prepare(self):
         self._create_download_path()
 
     def _create_download_path(self):
-        if not self.download_path.exists():
-            self.download_path.mkdir()
+        if not self.path.exists():
+            self.path.mkdir()
 
+    
+class DownloadManager(object):
+    def __init__(self, source, destination):
+        self.source = source
+        self.destination = destination
+    
+    def prepare(self):
+        self.source.prepare()
+        self.destination.prepare()
+    
+    def download(self):
+        files = self.source.get_files()
+
+        for filename, url in files:
+            destination_path = self.destination.path / filename
+            if destination_path.exists():
+                print "Path already exists {0}".format(destination_path)
+                continue
+    
+            self.source.downloadURL(url, destination_path)
 
 if __name__ == '__main__':
     download_source = DownloadSource("https://builder.blender.org/download")
-    download_source.prepare()
-    files = download_source.get_files()
-    
     download_destination = DownloadDestination('~/Downloads/Blender/BlenderToolbox/files')
-    download_destination.prepare()
     
-    for filename, url in files:
-        destination_path = download_destination.download_path / filename
-        download_source.downloadURL(url, destination_path)
+    download_manager = DownloadManager(download_source, download_destination)
+    
+    download_manager.prepare()
+    
+    download_manager.download()
