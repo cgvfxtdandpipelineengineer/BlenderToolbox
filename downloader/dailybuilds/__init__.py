@@ -12,8 +12,6 @@ import zipfile
 logger = logging.getLogger(__name__)
 
 
-
-
 class DestinationPathAlreadyExists(RuntimeError):
     pass
 
