@@ -106,7 +106,7 @@ class DownloadManager(object):
         for filename, url in files:
             try:
                 downloaded_path = self.download_file(filename, url)
-                download_paths.append(downloaded_path)
+                downloaded_paths.append(downloaded_path)
             except DestinationPathAlreadyExists as e:
                 logger.warning(e)
             except DownloadError as e:
