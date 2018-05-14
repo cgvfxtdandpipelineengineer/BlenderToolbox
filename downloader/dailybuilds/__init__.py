@@ -38,6 +38,8 @@ class DownloadSource(object):
         soup = BeautifulSoup(self.page, 'html.parser')
         tables = soup.findAll('table', attrs={'class': 'table table-striped table-hover box'})
         
+        logging.warning("Scraping links for downloadable archive files")
+        
         for table in tables:
             anchors = table.findAll('a')
             for anchor in anchors:
@@ -72,7 +74,7 @@ class DownloadDestination(object):
             zipped = zipfile.ZipFile(str(zipfilepath))
             logger.warning("Extracting {0}".format(str(zipfilepath)))
             zipped.extractall(path=str(zipfilepath.parent))
-            
+            logging.info("Extracted zip file {0}".format(zipfilepath))
         except Exception as e:
             raise ArchiveExtractionError(e) 
 
@@ -123,8 +125,8 @@ if __name__ == '__main__':
     
     files = download_manager.source.get_files()
     
-    destination_path = download_manager.download_file(*files[3])
+    #destination_path = download_manager.download_file(*files[3])
     
-    download_manager.destination.extract_zip(destination_path)
+    #download_manager.destination.extract_zip(destination_path)
 
     # download_manager.download()
