@@ -1,9 +1,21 @@
+import sys
+
 import logging
 
-import pathlib2
+if sys.version_info.major == 2:
+    from pathlib2 import Path
+elif sys.version_info.major == 3:
+    from pathlib import Path
+else:
+    raise RuntimeError("This script is only supported on Python 2 and 3")
 
-import urllib2
-from HTMLParser import HTMLParser
+if sys.version_info.major == 2:
+    from urllib2 import urlopen
+elif sys.version_info.major == 3:
+    from urllib.request import urlopen
+else:
+    raise RuntimeError("This script is only supported on Python 2 and 3")
+
 from bs4 import BeautifulSoup
 
 import zipfile
@@ -30,7 +42,7 @@ class DownloadSource(object):
         self.page = None
     
     def prepare(self):
-        self.page = urllib2.urlopen(self.download_path)
+        self.page = urlopen(self.download_path)
     
     def get_files(self):
         files_to_download = []
@@ -50,7 +62,7 @@ class DownloadSource(object):
 
     @classmethod
     def downloadURL(cls, url, destination_path):
-        opened_url = urllib2.urlopen(url)
+        opened_url = urlopen(url)
 
         logger.warning("Downloading to {0}".format(destination_path))
 
@@ -60,7 +72,7 @@ class DownloadSource(object):
 
 class DownloadDestination(object):
     def __init__(self, download_path):
-        self.path = pathlib2.Path(download_path).expanduser()
+        self.path = Path(download_path).expanduser()
 
     def prepare(self):
         self._create_download_path()
@@ -125,8 +137,6 @@ if __name__ == '__main__':
     
     files = download_manager.source.get_files()
     
-    #destination_path = download_manager.download_file(*files[3])
-    
+    #destination_path = download_manager.download_file(*files[1])
     #download_manager.destination.extract_zip(destination_path)
-
-    # download_manager.download()
+    #download_manager.download()
