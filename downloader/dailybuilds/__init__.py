@@ -6,15 +6,11 @@ if sys.version_info.major == 2:
     from pathlib2 import Path
 elif sys.version_info.major == 3:
     from pathlib import Path
-else:
-    raise RuntimeError("This script is only supported on Python 2 and 3")
 
 if sys.version_info.major == 2:
     from urllib2 import urlopen
 elif sys.version_info.major == 3:
     from urllib.request import urlopen
-else:
-    raise RuntimeError("This script is only supported on Python 2 and 3")
 
 from bs4 import BeautifulSoup
 
@@ -136,7 +132,7 @@ if __name__ == '__main__':
     download_manager.prepare()
     
     files = download_manager.source.get_files()
-    
-    #destination_path = download_manager.download_file(*files[1])
-    #download_manager.destination.extract_zip(destination_path)
+    this_file = files[3]
+    destination_path = download_manager.download_file(*this_file)
+    download_manager.destination.extract_zip(destination_path)
     #download_manager.download()
